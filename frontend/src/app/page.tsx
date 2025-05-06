@@ -18,7 +18,7 @@ export default function Home() {
 
     try {
       console.log(url)
-      const response = await axios.post(`http://localhost:3000/api/reels`, {
+      const response = await axios.post(`api/reels`, {
         url: url,
         headers: {
           "Content-Type": "application/json",
@@ -33,7 +33,7 @@ export default function Home() {
       setLoading(false)
     }
   }
-
+console.log("videoUrl", videoUrl)
   return (
     <div className="min-h-screen bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] flex flex-col items-center justify-center p-4 md:p-8">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
