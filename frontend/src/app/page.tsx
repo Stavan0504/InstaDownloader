@@ -19,7 +19,7 @@ export default function Home() {
 
     try {
       console.log(url)
-      const response = await axios.post(`https://instadownloader-backend.up.railway.app/get-video`, {
+      const response = await axios.post(`https://instadownloader-backend-production.up.railway.app`, {
         url: url,
         headers: {
           "Content-Type": "application/json",
