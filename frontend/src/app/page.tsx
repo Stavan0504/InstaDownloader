@@ -15,6 +15,7 @@ export default function Home() {
     e.preventDefault()
     setLoading(true)
     setError("")
+    
 
     try {
       console.log(url)
