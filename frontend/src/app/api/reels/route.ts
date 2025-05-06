@@ -15,8 +15,10 @@ interface ExecResult {
 
 export async function POST(req: Request): Promise<NextResponse> {
     try {
+        console.log('I am here')
         const body: RequestBody = await req.json();
         const { url } = body;
+        console.log("I am here too");
         console.log("URL:", url);
         
         if (!url) {
@@ -25,9 +27,9 @@ export async function POST(req: Request): Promise<NextResponse> {
         
         const ytDlpPath = `"C:\\Users\\Stavan\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python311\\Scripts\\yt-dlp.exe"`;
         
-        
+        console.log('Now executing command...')
         const { stdout, stderr }: ExecResult = await execAsync(`${ytDlpPath} -g "${url}"`);
-        
+        console.log('Command executed successfully')
         if (stderr  && !stderr.includes("WARNING:")) {
             console.error(`Error: ${stderr}`);
             return NextResponse.json({ error: 'Failed to get video URL' }, { status: 500 });
