@@ -25,10 +25,10 @@ export async function POST(req: Request): Promise<NextResponse> {
             return NextResponse.json({ error: "URL is required" }, { status: 400 });
         }
         
-        const ytDlpPath = `"C:\\Users\\Stavan\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python311\\Scripts\\yt-dlp.exe"`;
+        // const ytDlpPath = `"C:\\Users\\Stavan\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python311\\Scripts\\yt-dlp.exe"`;
         
         console.log('Now executing command...')
-        const { stdout, stderr }: ExecResult = await execAsync(`${ytDlpPath} -g "${url}"`);
+        const { stdout, stderr }: ExecResult = await execAsync(`yt-dlp -g "${url}"`);
         console.log('Command executed successfully')
         if (stderr  && !stderr.includes("WARNING:")) {
             console.error(`Error: ${stderr}`);
