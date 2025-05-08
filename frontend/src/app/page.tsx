@@ -11,22 +11,28 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
+  const options = {
+    method: 'GET',
+    url: 'https://instagram-reels-downloader-api.p.rapidapi.com/download',
+    headers: {
+      'x-rapidapi-key': 'a39a70be31msh74f618556a748b1p12ea79jsn797d1d01b492',
+      'x-rapidapi-host': 'instagram-reels-downloader-api.p.rapidapi.com'
+    }
+  };
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError("")
-    
+    setVideoUrl("") // Reset the video URL on submit to ensure it updates with new URL
 
     try {
-      console.log(url)
-      const response = await axios.post(`api/reels`, {
-        url: url,
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await axios.request({ 
+        ...options, 
+        params: { url } // Use the inputted URL dynamically
       })
-      console.log(response.data)
-      setVideoUrl(response.data.videoUrl)
+      console.log(response.data.data.medias)
+      setVideoUrl(response.data.data.medias[0].url)
     } catch (err) {
       console.error(err)
       setError("Failed to download the reel. Please check the URL and try again.")
@@ -34,7 +40,7 @@ export default function Home() {
       setLoading(false)
     }
   }
-console.log("videoUrl", videoUrl)
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] flex flex-col items-center justify-center p-4 md:p-8">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
@@ -90,6 +96,15 @@ console.log("videoUrl", videoUrl)
             </video>
           </div>
 
+          <div className="mt-4 text-center">
+            <a
+              href={videoUrl}
+              download
+              className="inline-block bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] text-white font-medium py-2 px-4 rounded-lg hover:opacity-90 transition-all"
+            >
+              Download Video
+            </a>
+          </div>
         </div>
       )}
 
