@@ -1,46 +1,33 @@
-import { exec } from "child_process";
 import { NextResponse } from "next/server";
-import { promisify } from "util";
+import YTDlpWrap from 'yt-dlp-wrap';
 
-const execAsync = promisify(exec);
+const ytDlpWrap = new YTDlpWrap();
 
 interface RequestBody {
     url: string;
 }
 
-interface ExecResult {
-    stdout: string;
-    stderr: string;
-}
-
 export async function POST(req: Request): Promise<NextResponse> {
     try {
-        console.log('I am here')
         const body: RequestBody = await req.json();
         const { url } = body;
-        console.log("I am here too");
-        console.log("URL:", url);
-        
+
         if (!url) {
             return NextResponse.json({ error: "URL is required" }, { status: 400 });
         }
-        
-        // const ytDlpPath = `"C:\\Users\\Stavan\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python311\\Scripts\\yt-dlp.exe"`;
-        
-        console.log('Now executing command...')
-        const { stdout, stderr }: ExecResult = await execAsync(`yt-dlp -g "${url}"`);
-        console.log('Command executed successfully')
-        if (stderr  && !stderr.includes("WARNING:")) {
-            console.error(`Error: ${stderr}`);
-            return NextResponse.json({ error: 'Failed to get video URL' }, { status: 500 });
-        }
 
-        const videoUrl = stdout.trim();
-        console.log(`Video URL: ${videoUrl}`);
-        
-        return NextResponse.json({ videoUrl: videoUrl }, { status: 200 });
+        console.log("Running yt-dlp for:", url);
+
+        // Use yt-dlp to get the direct video URL
+        const output = await ytDlpWrap.execPromise(["-g", url]);
+
+        const videoUrl = output.trim();
+        console.log("Extracted video URL:", videoUrl);
+
+        return NextResponse.json({ videoUrl }, { status: 200 });
+
     } catch (error) {
-        console.error('Error:', error);
-        return NextResponse.json({ error: 'An error occurred while processing the request' }, { status: 500 });
+        console.error("yt-dlp error:", error);
+        return NextResponse.json({ error: "Failed to fetch video URL" }, { status: 500 });
     }
 }
