@@ -20,6 +20,16 @@ export default function Home() {
     }
   };
 
+  const cleanInstagramUrl = (inputUrl: string): string => {
+    let cleanUrl = inputUrl.split('?')[0];
+
+    if (cleanUrl.endsWith('/')) {
+      cleanUrl = cleanUrl.slice(0, -1);
+    }
+    
+    return cleanUrl;
+  };
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
@@ -27,9 +37,14 @@ export default function Home() {
     setVideoUrl("") // Reset the video URL on submit to ensure it updates with new URL
 
     try {
+      // Clean the URL before sending to API
+      const cleanedUrl = cleanInstagramUrl(url);
+      console.log("Original URL:", url);
+      console.log("Cleaned URL:", cleanedUrl);
+      
       const response = await axios.request({ 
         ...options, 
-        params: { url } // Use the inputted URL dynamically
+        params: { url: cleanedUrl } // Use the cleaned URL
       })
       console.log(response.data.data.medias)
       setVideoUrl(response.data.data.medias[0].url)
@@ -40,6 +55,7 @@ export default function Home() {
       setLoading(false)
     }
   }
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCAF45] flex flex-col items-center justify-center p-4 md:p-8">
